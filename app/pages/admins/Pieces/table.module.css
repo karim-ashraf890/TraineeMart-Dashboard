@@ -1,0 +1,34 @@
+.tableWrapper {
+  overflow: hidden;
+  border-radius: 20px;
+  background: #fff;
+}
+:global(.ant-table) {
+  border-radius: 20px;
+}
+
+:global(.ant-table-container) {
+  border-radius: 20px;
+}
+
+:global(.ant-table-content) {
+  border-radius: 20px;
+}
+:global(.ant-table-thead > tr > th) {
+  background: #183153 !important;
+  color: white !important;
+  font-size: 14px;
+  font-weight: 600;
+  border: none !important;
+}
+:global(.ant-table-thead > tr > th::before) {
+  display: none !important;
+}
+:global(.ant-table-tbody > tr:nth-child(odd) > td) {
+  background-color: #e4dddd;
+}
+:global(.ant-table-tbody > tr:hover > td) {
+  background-color: #ebebeb !important;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}

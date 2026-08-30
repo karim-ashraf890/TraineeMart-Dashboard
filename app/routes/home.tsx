@@ -1,0 +1,13 @@
+import Home from "../pages/home";
+import type { Route } from "./+types/home";
+
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Dashboard" },
+    { name: "description", content: "Welcome to Dashboard" },
+  ];
+}
+
+export default function HomePage() {
+  return <Home />;
+}
