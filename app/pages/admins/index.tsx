@@ -113,7 +113,7 @@ export default function Admins() {
                 <Pagination
                   current={page}
                   total={totalCount}
-                  pageSize={5}
+                  pageSize={20}
                   showSizeChanger={false}
                   onChange={(newPage) => {
                     setSearchParams({ page: String(newPage), search });
