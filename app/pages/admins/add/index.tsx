@@ -7,6 +7,7 @@ import { FaCamera } from "react-icons/fa";
 import { Input } from "../../../components/input";
 import { useReducer } from "react";
 import Permissions from "../Pieces/Permissions";
+import { Button } from "../../../components/button";
 
 function reducer(state: any, action: any) {
   if (action.type === "firstName_changed") {
@@ -27,28 +28,22 @@ function reducer(state: any, action: any) {
       email: action.value,
     };
   }
-  if (action.type === "phoneCode_changed") {
+  if (action.type === "phone_code_changed") {
     return {
       ...state,
-      phoneCode: action.value,
+      phone_code: action.value,
     };
   }
-  if (action.type === "phoneNumber_changed") {
+  if (action.type === "phone_number_changed") {
     return {
       ...state,
-      phoneNumber: action.value,
+      phone_number: action.value,
     };
   }
   if (action.type === "password_changed") {
     return {
       ...state,
       password: action.value,
-    };
-  }
-  if (action.type === "confirmPassword_changed") {
-    return {
-      ...state,
-      confirmPassword: action.value,
     };
   }
   if (action.type === "permissions_changed") {
@@ -65,26 +60,18 @@ export default function AddAdmin() {
     firstName: "",
     lastName: "",
     email: "",
-    phoneCode: "+20",
-    phoneNumber: "",
+    phone_code: "+20",
+    phone_number: "",
     password: "",
-    confirmPassword: "",
     permissions: [] as number[],
   });
-  console.log(state.firstName);
-  console.log(state.lastName);
-  console.log(state.email);
-  console.log(state.phoneCode);
-  console.log(state.phoneNumber);
-  console.log(state.password);
-  console.log(state.confirmPassword);
-  console.log(state.permissions);
+
   const { axios: axiosInstance } = useAxios();
   const navigate = useNavigate();
 
-  const handleSubmit = async (body: FormData) => {
+  const handleSubmit = async () => {
     try {
-      await addAdmin(axiosInstance, body);
+      await addAdmin(axiosInstance, state);
 
       navigate("/admins?page=1&search=");
     } catch (error) {
@@ -175,18 +162,18 @@ export default function AddAdmin() {
                   label="Phone Number"
                   placeholder="Enter phone number"
                   className={styles.formInput}
-                  phoneCode={state.phoneCode}
-                  phoneNumber={state.phoneNumber}
-                  onPhoneCodeChange={(phoneCode) => {
+                  phoneCode={state.phone_code}
+                  phoneNumber={state.phone_number}
+                  onChange={(phone_code) => {
                     dispatch({
-                      type: "phoneCode_changed",
-                      value: phoneCode,
+                      type: "phone_code_changed",
+                      value: phone_code,
                     });
                   }}
-                  onPhoneNumberChange={(phoneNumber) => {
+                  onPhoneNumberChange={(phone_number) => {
                     dispatch({
-                      type: "phoneNumber_changed",
-                      value: phoneNumber,
+                      type: "phone_number_changed",
+                      value: phone_number,
                     });
                   }}
                 />
@@ -218,10 +205,10 @@ export default function AddAdmin() {
                   className={styles.formInput}
                   value={state.confirmPassword}
                   onChange={(confirmPassword) => {
-                    dispatch({
-                      type: "confirmPassword_changed",
-                      value: confirmPassword.target.value,
-                    });
+                    // dispatch({
+                    //   type: "confirmPassword_changed",
+                    //   value: confirmPassword.target.value,
+                    // });
                   }}
                 />
               </div>
@@ -234,6 +221,16 @@ export default function AddAdmin() {
                       value: permissions,
                     });
                   }}
+                />
+              </div>
+              <div className="col-12">
+                <Button
+                  id="Submit"
+                  type="submit"
+                  className={styles["buttonSubmit"]}
+                  text="Submit"
+                  onClick={handleSubmit}
+                  // disabled={!isFormValid}
                 />
               </div>
             </div>

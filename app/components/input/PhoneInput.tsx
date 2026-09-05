@@ -27,7 +27,7 @@ export default function PhoneInput({
           style={{ width: "20%" }}
           // onChange={onCodeChange}
           options={[
-            { value: "+20", label: "🇪🇬 +20" },
+            { value: "20", label: "🇪🇬 +20" },
             { value: "+966", label: "🇸🇦 +966" },
           ]}
         />
