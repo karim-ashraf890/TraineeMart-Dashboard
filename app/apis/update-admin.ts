@@ -22,3 +22,7 @@ export const updateAdmin = (
 ) => {
   return axios.post(`/admins/${id}`, data);
 };
+
+export const deleteAdmin = (axios: AxiosInstance, id: string | number) => {
+  return axios.delete(`/admins/${id}`);
+};
