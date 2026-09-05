@@ -1,8 +1,3 @@
-// import type { AxiosInstance } from "axios";
-
-// export const addAdmin = async (axios: AxiosInstance, formData: FormData) => {
-//   return axios.post("/admins", formData);
-// };
 import type { AxiosInstance } from "axios";
 
 export type AddAdminData = {

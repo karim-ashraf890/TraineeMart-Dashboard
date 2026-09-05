@@ -1,5 +1,6 @@
 import { Dropdown } from "antd";
 import type { MenuProps } from "antd";
+import { useNavigate } from "react-router";
 import { AiOutlineMore } from "react-icons/ai";
 import { FiEdit2, FiEye, FiTrash2 } from "react-icons/fi";
 
@@ -11,16 +12,9 @@ interface Props {
 }
 
 export default function AdminActions({ admin }: Props) {
+  const navigate = useNavigate();
+
   const items: MenuProps["items"] = [
-    {
-      key: "view",
-      label: (
-        <div className={styles.menuItem}>
-          <FiEye />
-          <span>View</span>
-        </div>
-      ),
-    },
     {
       key: "edit",
       label: (
@@ -43,12 +37,8 @@ export default function AdminActions({ admin }: Props) {
 
   const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
     switch (key) {
-      case "view":
-        console.log("View", admin);
-        break;
-
       case "edit":
-        console.log("Edit", admin);
+        navigate(`/admins/edit/${admin.id}`);
         break;
 
       case "delete":

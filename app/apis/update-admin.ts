@@ -1,0 +1,24 @@
+import type { AxiosInstance } from "axios";
+
+export type UpdateAdminData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone_code: string;
+  phone_number: string;
+  password?: string;
+  confirmPassword?: string;
+  permissions: number[];
+};
+
+export const getAdmin = (axios: AxiosInstance, id: string | number) => {
+  return axios.get(`/admins/${id}`);
+};
+
+export const updateAdmin = (
+  axios: AxiosInstance,
+  id: string | number,
+  data: UpdateAdminData,
+) => {
+  return axios.post(`/admins/${id}`, data);
+};
