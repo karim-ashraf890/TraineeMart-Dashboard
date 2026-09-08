@@ -17,6 +17,7 @@ import styles from "./global.module.css";
 
 import { Button, Layout as AntLayout, Menu, theme } from "antd";
 import { useState } from "react";
+// import { AppData, AppProvider } from "./store/index";
 
 import {
   AiOutlineAppstore,
@@ -34,6 +35,7 @@ import { GoLightBulb } from "react-icons/go";
 import { BsChatDots } from "react-icons/bs";
 import { FiLogOut } from "react-icons/fi";
 import { clearAuthData } from "./apis/clearAuthData";
+import { AppProvider } from "./store/appReducer";
 
 const { Header, Sider, Content } = AntLayout;
 
@@ -98,97 +100,106 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
 
       <body suppressHydrationWarning>
-        <AntLayout style={{ minHeight: "100vh" }}>
-          {!isLoginPage && (
-            <Sider trigger={null} collapsible collapsed={collapsed}>
-              <div className="demo-logo-vertical" />
-
-              <Menu
-                theme="dark"
-                mode="inline"
-                selectedKeys={[getSelectedKey()]}
-                onClick={handleMenuClick}
-                items={[
-                  {
-                    key: "1",
-                    icon: (
-                      <img
-                        src="/app/images/avatar_holder_dashboard.gif"
-                        alt="menu"
-                        className={styles["avatar-img"]}
-                      />
-                    ),
-                    label: "Ash Hassan",
-                    // disabled: true,
-                  },
-                  {
-                    key: "2",
-                    icon: <MdOutlineSpaceDashboard />,
-                    label: "Dashboard",
-                  },
-                  { key: "3", icon: <GrUserAdmin />, label: "Admins" },
-                  { key: "4", icon: <GrGroup />, label: "Trainees" },
-                  {
-                    key: "5",
-                    icon: <RiOrganizationChart />,
-                    label: "Organizations",
-                  },
-                  { key: "6", icon: <RxUpdate />, label: "Update Requests" },
-                  { key: "7", icon: <BiCategory />, label: "Categories" },
-                  {
-                    key: "8",
-                    icon: <AiOutlineAppstore />,
-                    label: "Sub categories",
-                  },
-                  { key: "9", icon: <GoLightBulb />, label: "Courses" },
-                  { key: "10", icon: <BiSolidShoppingBags />, label: "Bags" },
-                  {
-                    key: "11",
-                    icon: <BsChatDots />,
-                    label: "Consultation Requests",
-                  },
-                  {
-                    key: "12",
-                    icon: <AiOutlineFile />,
-                    label: "Pages",
-                    children: [
-                      { key: "12-1", label: "Home Page" },
-                      { key: "12-2", label: "About Us" },
-                      { key: "12-3", label: "Contact" },
-                    ],
-                  },
-                ]}
-              />
-
-              <div className="logout-container" onClick={handleLogout}>
-                <FiLogOut />
-                <span>Logout</span>
-              </div>
-            </Sider>
-          )}
-
-          <AntLayout>
+        <AppProvider>
+          {/* <AppProvider loginUser={}> */}
+          <AntLayout style={{ minHeight: "100vh" }}>
             {!isLoginPage && (
-              <Header style={{ padding: 0 }}>
-                <Button
-                  type="text"
-                  icon={
-                    collapsed ? <AiOutlineMenuUnfold /> : <AiOutlineMenuFold />
-                  }
-                  onClick={() => setCollapsed(!collapsed)}
-                  style={{ fontSize: "16px", width: 64, height: 64 }}
+              <Sider trigger={null} collapsible collapsed={collapsed}>
+                <div className="demo-logo-vertical" />
+
+                <Menu
+                  theme="dark"
+                  mode="inline"
+                  selectedKeys={[getSelectedKey()]}
+                  onClick={handleMenuClick}
+                  items={[
+                    {
+                      key: "1",
+                      icon: (
+                        <img
+                          src="/app/images/avatar_holder_dashboard.gif"
+                          alt="menu"
+                          className={styles["avatar-img"]}
+                        />
+                      ),
+                      label: "Ash Hassan",
+                      // disabled: true,
+                    },
+                    {
+                      key: "2",
+                      icon: <MdOutlineSpaceDashboard />,
+                      label: "Dashboard",
+                    },
+                    { key: "3", icon: <GrUserAdmin />, label: "Admins" },
+                    { key: "4", icon: <GrGroup />, label: "Trainees" },
+                    {
+                      key: "5",
+                      icon: <RiOrganizationChart />,
+                      label: "Organizations",
+                    },
+                    { key: "6", icon: <RxUpdate />, label: "Update Requests" },
+                    { key: "7", icon: <BiCategory />, label: "Categories" },
+                    {
+                      key: "8",
+                      icon: <AiOutlineAppstore />,
+                      label: "Sub categories",
+                    },
+                    { key: "9", icon: <GoLightBulb />, label: "Courses" },
+                    { key: "10", icon: <BiSolidShoppingBags />, label: "Bags" },
+                    {
+                      key: "11",
+                      icon: <BsChatDots />,
+                      label: "Consultation Requests",
+                    },
+                    {
+                      key: "12",
+                      icon: <AiOutlineFile />,
+                      label: "Pages",
+                      children: [
+                        { key: "12-1", label: "Home Page" },
+                        { key: "12-2", label: "About Us" },
+                        { key: "12-3", label: "Contact" },
+                      ],
+                    },
+                  ]}
                 />
-              </Header>
+
+                <div className="logout-container" onClick={handleLogout}>
+                  <FiLogOut />
+                  <span>Logout</span>
+                </div>
+              </Sider>
             )}
 
-            <Content style={isLoginPage ? {} : { padding: 24, minHeight: 280 }}>
-              {children}
-            </Content>
-          </AntLayout>
-        </AntLayout>
+            <AntLayout>
+              {!isLoginPage && (
+                <Header style={{ padding: 0 }}>
+                  <Button
+                    type="text"
+                    icon={
+                      collapsed ? (
+                        <AiOutlineMenuUnfold />
+                      ) : (
+                        <AiOutlineMenuFold />
+                      )
+                    }
+                    onClick={() => setCollapsed(!collapsed)}
+                    style={{ fontSize: "16px", width: 64, height: 64 }}
+                  />
+                </Header>
+              )}
 
-        <ScrollRestoration />
-        <Scripts />
+              <Content
+                style={isLoginPage ? {} : { padding: 24, minHeight: 280 }}
+              >
+                {children}
+              </Content>
+            </AntLayout>
+          </AntLayout>
+
+          <ScrollRestoration />
+          <Scripts />
+        </AppProvider>
       </body>
     </html>
   );

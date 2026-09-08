@@ -5,7 +5,7 @@ import { addAdmin } from "../../../apis/add-admin";
 import styles from "./index.module.css";
 import { FaCamera } from "react-icons/fa";
 import { Input } from "../../../components/input";
-import { useReducer } from "react";
+import { useReducer, useRef, useState } from "react";
 import Permissions from "../Pieces/Permissions";
 import { Button } from "../../../components/button";
 
@@ -71,7 +71,24 @@ export default function AddAdmin() {
 
   const handleSubmit = async () => {
     try {
-      await addAdmin(axiosInstance, state);
+      const formData = new FormData();
+
+      formData.append("firstName", state.firstName);
+      formData.append("lastName", state.lastName);
+      formData.append("email", state.email);
+      formData.append("phone_code", state.phone_code.replace("+", ""));
+      formData.append("phone_number", state.phone_number);
+      formData.append("password", state.password);
+
+      state.permissions.forEach((permissionId: number) => {
+        formData.append("permissions[]", permissionId.toString());
+      });
+
+      if (selectedFile) {
+        formData.append("profile_image", selectedFile);
+      }
+
+      await addAdmin(axiosInstance, formData);
 
       navigate("/admins?page=1&search=");
     } catch (error) {
@@ -83,19 +100,44 @@ export default function AddAdmin() {
       }
     }
   };
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef<any>(null);
+  const [previewUrl, setPreviewUrl] = useState<any>(null);
 
+  const handleFileChange = (event: any) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewUrl(objectUrl);
+    }
+  };
+  const handleCustomClick = () => {
+    fileInputRef.current?.click();
+  };
   return (
     <div className={styles.formcontainer}>
       <div className="container-fluid">
         <div className="row">
           <div className="col-12">
-            <div className={styles.avatarContainer}>
+            <div className={styles.avatarContainer} onClick={handleCustomClick}>
               <div className={styles.avatar}>
-                <img
-                  src="/app/images/avatar_holder_dashboard.gif"
-                  alt="Profile"
-                />
+                {previewUrl ? (
+                  <img src={previewUrl} alt="Profile" />
+                ) : (
+                  <img
+                    src="/app/images/avatar_holder_dashboard.gif"
+                    alt="Profile"
+                  />
+                )}
               </div>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                accept="image/*"
+                style={{ display: "none" }}
+              />
               <button type="button" className={styles.cameraButton}>
                 <FaCamera />
               </button>

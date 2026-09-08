@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useAxios } from "../../hooks/useAxios";
 import { Input } from "../../components/input";
 import { Button } from "../../components/button";
@@ -7,6 +7,9 @@ import type { Admin } from "./types";
 import AdminTable from "./Pieces/AdminTable";
 import { Pagination } from "antd";
 import { useSearchParams, useNavigate } from "react-router";
+// import { NameContext } from "../../store/appReducer";
+// import { AppData } from "../../store/index";
+import { AppContext } from "../../store/appReducer";
 
 export default function Admins() {
   const { axios } = useAxios();
@@ -19,7 +22,9 @@ export default function Admins() {
 
   const [admins, setAdmins] = useState<Admin[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
-
+  // const data = useContext(AppData);
+  // const name = useContext(NameContext);
+  const date = useContext(AppContext);
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearchParams({ page: "1", search: searchInput });
