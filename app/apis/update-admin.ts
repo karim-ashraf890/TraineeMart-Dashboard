@@ -18,9 +18,14 @@ export const getAdmin = (axios: AxiosInstance, id: string | number) => {
 export const updateAdmin = (
   axios: AxiosInstance,
   id: string | number,
-  data: UpdateAdminData,
+  data: FormData,
 ) => {
-  return axios.post(`/admins/${id}`, data);
+  return axios.post(`/admins/${id}`, data, {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "multipart/form-data",
+    },
+  });
 };
 
 export const deleteAdmin = (axios: AxiosInstance, id: string | number) => {

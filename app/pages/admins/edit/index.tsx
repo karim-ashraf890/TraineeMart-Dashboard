@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useAxios } from "../../../hooks/useAxios";
 import { getAdmin, updateAdmin } from "../../../apis/update-admin";
@@ -20,6 +20,7 @@ function reducer(state: any, action: any) {
       email: admin.user?.email ?? "",
       phone_code: admin.user?.phone_code ?? "+20",
       phone_number: admin.user?.phone_number ?? "",
+      profile_image: admin.profile_image_url ?? "",
       permissions:
         admin.user?.permissions?.map((permission: any) => permission.id) ?? [],
     };
@@ -59,6 +60,7 @@ function reducer(state: any, action: any) {
       phone_number: action.value,
     };
   }
+
   if (action.type === "permissions_changed") {
     return {
       ...state,
@@ -75,6 +77,7 @@ export default function EditAdmin() {
   const { axios: axiosInstance } = useAxios();
 
   const [state, dispatch] = useReducer(reducer, {
+    profile_image: "",
     firstName: "",
     lastName: "",
     email: "",
@@ -83,6 +86,12 @@ export default function EditAdmin() {
     password: "",
     permissions: [] as number[],
   });
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -103,7 +112,22 @@ export default function EditAdmin() {
     if (!id) return;
 
     try {
-      await updateAdmin(axiosInstance, id, state);
+      const formData = new FormData();
+
+      formData.append("firstName", state.firstName);
+      formData.append("lastName", state.lastName);
+      formData.append("email", state.email);
+      formData.append("phone_code", state.phone_code.replace("+", ""));
+      formData.append("phone_number", state.phone_number);
+
+      state.permissions.forEach((permissionId: number) => {
+        formData.append("permissions[]", permissionId.toString());
+      });
+      if (selectedFile) {
+        formData.append("profile_image", selectedFile);
+      }
+
+      await updateAdmin(axiosInstance, id, formData);
 
       navigate("/admins?page=1&search=");
     } catch (error) {
@@ -116,25 +140,51 @@ export default function EditAdmin() {
     }
   };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (file) {
+      setSelectedFile(file);
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewUrl(objectUrl);
+    }
+  };
+
+  const handleCustomClick = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <div className={styles.formcontainer}>
       <div className="container-fluid">
         <div className="row">
           <div className="col-12">
-            <div className={styles.avatarContainer}>
+            <div className={styles.avatarContainer} onClick={handleCustomClick}>
               <div className={styles.avatar}>
-                <img
-                  src="/app/images/avatar_holder_dashboard.gif"
-                  alt="Profile"
-                />
+                {previewUrl ? (
+                  <img src={previewUrl} alt="Profile" />
+                ) : (
+                  <img
+                    src={
+                      state.profile_image ||
+                      "/app/images/avatar_holder_dashboard.gif"
+                    }
+                    alt="Profile"
+                  />
+                )}
               </div>
-
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                accept="image/*"
+                style={{ display: "none" }}
+              />
               <button type="button" className={styles.cameraButton}>
                 <FaCamera />
               </button>
             </div>
           </div>
-
           <div className="col-12">
             <div className="row g-3">
               <div className="col-12 col-md-6">
@@ -154,7 +204,6 @@ export default function EditAdmin() {
                   }}
                 />
               </div>
-
               <div className="col-12 col-md-6">
                 <Input
                   id="lastName"
@@ -172,7 +221,6 @@ export default function EditAdmin() {
                   }}
                 />
               </div>
-
               <div className="col-12 col-md-6">
                 <Input
                   id="email"
@@ -190,7 +238,6 @@ export default function EditAdmin() {
                   }}
                 />
               </div>
-
               <div className="col-12 col-md-6">
                 <Input
                   id="phone"
@@ -226,12 +273,11 @@ export default function EditAdmin() {
                   }}
                 />
               </div>
-
               <div className="col-12">
                 <Button
                   id="Submit"
                   type="submit"
-                  className={styles["buttonSubmit"]}
+                  className={styles.buttonSubmit}
                   text="Submit"
                   onClick={handleSubmit}
                 />
