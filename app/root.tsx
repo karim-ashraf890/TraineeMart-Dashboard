@@ -16,7 +16,7 @@ import "./app.css";
 import styles from "./global.module.css";
 
 import { Button, Layout as AntLayout, Menu, theme } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import { AppData, AppProvider } from "./store/index";
 
 import {
@@ -36,6 +36,8 @@ import { BsChatDots } from "react-icons/bs";
 import { FiLogOut } from "react-icons/fi";
 import { clearAuthData } from "./apis/clearAuthData";
 import { AppProvider } from "./store/appReducer";
+import { GetMyProfile } from "./apis/get my-profile";
+import { useAxios } from "./hooks/useAxios";
 
 const { Header, Sider, Content } = AntLayout;
 
@@ -46,8 +48,6 @@ export const links: Route.LinksFunction = () => [
     href: "../app/images/trainee-mart-logo.svg",
   },
 ];
-
-// Map menu keys to routes
 const menuRoutes: Record<string, string> = {
   "1": "/my-profile",
   "2": "/",
@@ -90,6 +90,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
       )?.[0] ?? "2"
     );
   };
+  const [profilestat, stprofilestat] = useState<any>(null);
+  const { axios } = useAxios();
+  useEffect(() => {
+    async function callprofila() {
+      try {
+        const ProfileDatea = await GetMyProfile(axios);
+        stprofilestat(ProfileDatea);
+      } catch (err: any) {
+        console.log(err);
+      }
+    }
+    callprofila();
+  }, []);
+
   return (
     <html lang="en">
       <head>
@@ -98,10 +112,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-
       <body suppressHydrationWarning>
-        <AppProvider>
-          {/* <AppProvider loginUser={}> */}
+        {/* <AppProvider> */}
+        <AppProvider loginUser={profilestat}>
           <AntLayout style={{ minHeight: "100vh" }}>
             {!isLoginPage && (
               <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -122,7 +135,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                           className={styles["avatar-img"]}
                         />
                       ),
-                      label: "Ash Hassan",
+                      label: profilestat == null ? "" : profilestat.first_name,
                       // disabled: true,
                     },
                     {
