@@ -35,9 +35,7 @@ export default function MyProfile() {
       <div className="row">
         <div className="col-12 p-0">
           <div className={styles["profile-avatar-container"]}>
-            {/* الصورة والاسم موجودين في نفس الـ col و جنب بعض */}
             <div className="col-6 p-5 d-flex align-items-center">
-              {/* Profile Image */}
               <div
                 className={styles.avatarContainer}
                 onClick={handleCustomClick}
@@ -55,8 +53,6 @@ export default function MyProfile() {
                     />
                   )}
                 </div>
-
-                {/* Hidden File Input */}
                 <input
                   type="file"
                   ref={fileInputRef}
@@ -64,17 +60,25 @@ export default function MyProfile() {
                   accept="image/*"
                   style={{ display: "none" }}
                 />
-
-                {/* Camera Button */}
                 <button type="button" className={styles.cameraButton}>
                   <FaCamera />
                 </button>
               </div>
-
-              {/* Profile Name */}
               <h2 className={`${styles.profileName} ms-3`}>
                 {loginUser?.first_name} {loginUser?.last_name}
               </h2>
+            </div>
+          </div>
+          <div className={styles["abbott-container"]}>
+            <div className={styles["about-section"]}>
+              <div className={styles["top-section"]}>
+                <div>Activities</div>
+                <div>About</div>
+              </div>
+              <div className={styles["line"]}></div>
+              <div className={styles["name"]}>
+                Last login {loginUser?.updated_at}
+              </div>
             </div>
           </div>
         </div>
