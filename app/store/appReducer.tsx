@@ -1,12 +1,11 @@
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
 
 const appState = {
-  state: {
-    loginUser: {
-      profile_image_url: "",
-      name: "",
-      updated_at: "",
-    },
+  loginUser: {
+    profile_image_url: "",
+    first_name: "",
+    last_name: "",
+    updated_at: "",
   },
   dispatch: (data: any) => {},
 };
@@ -17,17 +16,17 @@ function reducer(state: any, action: any) {
   if (action.type == "UpdateUser") {
     return {
       ...state,
-      state: { name: action.name },
+      loginUser: action.payload,
     };
   }
 }
 export function AppProvider({ children, loginUser }: any) {
-  const [state, dispatch] = useReducer(reducer, {
-    ...appState,
-    state: { ...appState.state, loginUser },
-  });
+  const [state, dispatch] = useReducer(reducer, appState);
+  useEffect(() => {
+    dispatch({ type: "UpdateUser", payload: loginUser });
+  }, [loginUser]);
   return (
-    <AppContext.Provider value={{ state, dispatch }}>
+    <AppContext.Provider value={{ ...state, dispatch }}>
       {children}
     </AppContext.Provider>
   );

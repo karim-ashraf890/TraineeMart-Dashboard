@@ -71,6 +71,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
   const isLoginPage = location.pathname === "/sign-in";
+  const isMyProfilePage = location.pathname === "/my-profile";
 
   const handleLogout = () => {
     clearAuthData();
@@ -130,12 +131,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
                       key: "1",
                       icon: (
                         <img
-                          src="/app/images/avatar_holder_dashboard.gif"
+                          src={
+                            profilestat?.profile_image_url
+                              ? profilestat.profile_image_url
+                              : "/app/images/avatar_holder_dashboard.gif"
+                          }
                           alt="menu"
                           className={styles["avatar-img"]}
                         />
                       ),
-                      label: profilestat == null ? "" : profilestat.first_name,
+                      label:
+                        profilestat == null
+                          ? ""
+                          : profilestat.first_name +
+                            " " +
+                            profilestat.last_name,
                       // disabled: true,
                     },
                     {
@@ -203,7 +213,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
               )}
 
               <Content
-                style={isLoginPage ? {} : { padding: 24, minHeight: 280 }}
+                style={
+                  isLoginPage || isMyProfilePage
+                    ? { padding: 0, minHeight: 280 }
+                    : { padding: 24, minHeight: 280 }
+                }
               >
                 {children}
               </Content>
