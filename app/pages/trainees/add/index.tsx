@@ -1,12 +1,11 @@
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { useAxios } from "../../../hooks/useAxios";
-import { addAdmin } from "../../.././apis/admin/add-admin";
+import { addTrainee } from "../../../apis/trainees/add-trainee";
 import styles from "./index.module.css";
 import { FaCamera } from "react-icons/fa";
 import { Input } from "../../../components/input";
 import { useReducer, useRef, useState } from "react";
-import Permissions from "../Pieces/Permissions";
 import { Button } from "../../../components/button";
 
 function reducer(state: any, action: any) {
@@ -16,46 +15,53 @@ function reducer(state: any, action: any) {
       firstName: action.value,
     };
   }
+
   if (action.type === "lastName_changed") {
     return {
       ...state,
       lastName: action.value,
     };
   }
+
   if (action.type === "email_changed") {
     return {
       ...state,
       email: action.value,
     };
   }
+
   if (action.type === "phone_code_changed") {
     return {
       ...state,
       phone_code: action.value,
     };
   }
+
   if (action.type === "phone_number_changed") {
     return {
       ...state,
       phone_number: action.value,
     };
   }
+
   if (action.type === "password_changed") {
     return {
       ...state,
       password: action.value,
     };
   }
-  if (action.type === "permissions_changed") {
+
+  if (action.type === "confirmPassword_changed") {
     return {
       ...state,
-      permissions: action.value,
+      confirmPassword: action.value,
     };
   }
+
   throw Error("Unknown action.");
 }
 
-export default function AddAdmin() {
+export default function AddTrainee() {
   const [state, dispatch] = useReducer(reducer, {
     firstName: "",
     lastName: "",
@@ -63,11 +69,15 @@ export default function AddAdmin() {
     phone_code: "+20",
     phone_number: "",
     password: "",
-    permissions: [] as number[],
+    confirmPassword: "",
   });
 
   const { axios: axiosInstance } = useAxios();
   const navigate = useNavigate();
+
+  const [selectedFile, setSelectedFile] = useState<any>(null);
+  const fileInputRef = useRef<any>(null);
+  const [previewUrl, setPreviewUrl] = useState<any>(null);
 
   const handleSubmit = async () => {
     try {
@@ -80,17 +90,16 @@ export default function AddAdmin() {
       formData.append("phone_number", state.phone_number);
       formData.append("password", state.password);
 
-      state.permissions.forEach((permissionId: number) => {
-        formData.append("permissions[]", permissionId.toString());
-      });
+      // Confirm Password مش بيتبعت للـ API
+      // لأنه مش موجود في fields الخاصة بالـ dashboard_students
 
       if (selectedFile) {
         formData.append("profile_image", selectedFile);
       }
 
-      await addAdmin(axiosInstance, formData);
-
-      navigate("/admins?page=1&search=");
+      await addTrainee(axiosInstance, formData);
+      alert("Trainee added successfully");
+      navigate("/trainees?page=1&search=");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("Status:", error.response?.status);
@@ -100,21 +109,22 @@ export default function AddAdmin() {
       }
     }
   };
-  const [selectedFile, setSelectedFile] = useState(null);
-  const fileInputRef = useRef<any>(null);
-  const [previewUrl, setPreviewUrl] = useState<any>(null);
 
   const handleFileChange = (event: any) => {
     const file = event.target.files?.[0];
+
     if (file) {
       setSelectedFile(file);
+
       const objectUrl = URL.createObjectURL(file);
       setPreviewUrl(objectUrl);
     }
   };
+
   const handleCustomClick = () => {
     fileInputRef.current?.click();
   };
+
   return (
     <div className={styles.formcontainer}>
       <div className="container-fluid">
@@ -131,6 +141,7 @@ export default function AddAdmin() {
                   />
                 )}
               </div>
+
               <input
                 type="file"
                 ref={fileInputRef}
@@ -138,11 +149,13 @@ export default function AddAdmin() {
                 accept="image/*"
                 style={{ display: "none" }}
               />
+
               <button type="button" className={styles.cameraButton}>
                 <FaCamera />
               </button>
             </div>
           </div>
+
           <div className="col-12">
             <div className="row g-3">
               <div className="col-12 col-md-6">
@@ -162,6 +175,7 @@ export default function AddAdmin() {
                   }}
                 />
               </div>
+
               <div className="col-12 col-md-6">
                 <Input
                   id="lastName"
@@ -179,6 +193,7 @@ export default function AddAdmin() {
                   }}
                 />
               </div>
+
               <div className="col-12 col-md-6">
                 <Input
                   id="email"
@@ -196,6 +211,7 @@ export default function AddAdmin() {
                   }}
                 />
               </div>
+
               <div className="col-12 col-md-6">
                 <Input
                   id="phone"
@@ -220,6 +236,7 @@ export default function AddAdmin() {
                   }}
                 />
               </div>
+
               <div className="col-12 col-md-6">
                 <Input
                   id="password"
@@ -237,6 +254,7 @@ export default function AddAdmin() {
                   }}
                 />
               </div>
+
               <div className="col-12 col-md-6">
                 <Input
                   id="confirmPassword"
@@ -247,24 +265,14 @@ export default function AddAdmin() {
                   className={styles.formInput}
                   value={state.confirmPassword}
                   onChange={(confirmPassword) => {
-                    // dispatch({
-                    //   type: "confirmPassword_changed",
-                    //   value: confirmPassword.target.value,
-                    // });
-                  }}
-                />
-              </div>
-              <div className="col-12">
-                <Permissions
-                  selectedPermissions={state.permissions}
-                  setSelectedPermissions={(permissions) => {
                     dispatch({
-                      type: "permissions_changed",
-                      value: permissions,
+                      type: "confirmPassword_changed",
+                      value: confirmPassword.target.value,
                     });
                   }}
                 />
               </div>
+
               <div className="col-12">
                 <Button
                   id="Submit"
@@ -272,7 +280,6 @@ export default function AddAdmin() {
                   className={styles["buttonSubmit"]}
                   text="Submit"
                   onClick={handleSubmit}
-                  // disabled={!isFormValid}
                 />
               </div>
             </div>

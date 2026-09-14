@@ -4,7 +4,7 @@ import { AppContext } from "../../store/appReducer";
 import { FaCamera } from "react-icons/fa";
 import { Input } from "../../components/input";
 import { Button } from "../../components/button";
-import { UpdatePassword } from "../../apis/update-admin";
+import { UpdatePassword } from "../../apis/admin/update-admin";
 import { useAxios } from "../../hooks/useAxios";
 import { clearAuthData } from "../../apis/clearAuthData";
 import { useNavigate } from "react-router";

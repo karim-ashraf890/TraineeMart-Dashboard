@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useReducer, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useAxios } from "../../../hooks/useAxios";
-import { getAdmin, updateAdmin } from "../../../apis/update-admin";
+import { getAdmin, updateAdmin } from "../../.././apis/admin/update-admin";
 import styles from "./index.module.css";
 import { FaCamera } from "react-icons/fa";
 import { Input } from "../../../components/input";

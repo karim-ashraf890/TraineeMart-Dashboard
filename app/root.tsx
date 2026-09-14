@@ -36,7 +36,7 @@ import { BsChatDots } from "react-icons/bs";
 import { FiLogOut } from "react-icons/fi";
 import { clearAuthData } from "./apis/clearAuthData";
 import { AppProvider } from "./store/appReducer";
-import { GetMyProfile } from "./apis/get my-profile";
+import { GetMyProfile } from "./apis/admin/get my-profile";
 import { useAxios } from "./hooks/useAxios";
 
 const { Header, Sider, Content } = AntLayout;

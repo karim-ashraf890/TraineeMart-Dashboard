@@ -1,18 +1,19 @@
 import { Dropdown } from "antd";
 import type { MenuProps } from "antd";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 import { AiOutlineMore } from "react-icons/ai";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
-import type { Admin } from "../types";
-import styles from "./AdminActions.module.css";
-import { useAxios } from "../../../../app/hooks/useAxios";
-import { deleteAdmin } from "../../../../app/apis/admin/update-admin";
+import type { Student } from "../types";
+import styles from "./StudentActions.module.css";
+import { useAxios } from "../../../hooks/useAxios";
+import { deleteTrainee } from "../../../apis/trainees/update-trainee";
+
 interface Props {
-  admin: Admin;
+  student: Student;
 }
-export default function AdminActions({ admin }: Props) {
+
+export default function StudentActions({ student }: Props) {
   const navigate = useNavigate();
-  const { id } = useParams();
   const { axios } = useAxios();
 
   const items: MenuProps["items"] = [
@@ -39,21 +40,32 @@ export default function AdminActions({ admin }: Props) {
   const handleMenuClick: MenuProps["onClick"] = async ({ key }) => {
     switch (key) {
       case "edit":
-        navigate(`/admins/edit/${admin.id}`);
+        alert();
+        navigate(`/trainees/edit/${student.id}`);
         break;
+
       case "delete":
         try {
-          await deleteAdmin(axios, admin.id);
-          console.log("Admin deleted successfully");
-          navigate("/admins?page=1&search=");
+          await deleteTrainee(axios, student.id);
+          alert("Trainee deleted successfully");
+          console.log("Trainee deleted successfully");
+
+          // ============================================================
+          // بعد نجاح الحذف نعمل Refresh للصفحة
+          // عشان الـ Trainee المحذوف يختفي من الجدول فورًا
+          // ============================================================
+          window.location.reload();
         } catch (error) {
-          console.error("Delete admin failed:", error);
+          console.error("Delete trainee failed:", error);
         }
+
         break;
+
       default:
         break;
     }
   };
+
   return (
     <Dropdown
       menu={{

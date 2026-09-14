@@ -13,6 +13,8 @@ export default [
   route("organizations", "./routes/organizations.tsx"),
   route("sub-categories", "./routes/sub-categories.tsx"),
   route("trainees", "./routes/trainees.tsx"),
+  route("trainees/add", "./routes/trainees-add.tsx"),
+  route("trainees/edit/:id", "./routes/trainees-edit.tsx"),
   route("update-requests", "./routes/update-requests.tsx"),
   route("pages/home", "./routes/home-page.tsx"),
   route("pages/about", "./routes/about.tsx"),

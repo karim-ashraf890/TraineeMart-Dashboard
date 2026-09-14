@@ -1,75 +1,109 @@
 import axios from "axios";
-import { useNavigate } from "react-router";
+import { useEffect, useReducer, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router";
 import { useAxios } from "../../../hooks/useAxios";
-import { addAdmin } from "../../.././apis/admin/add-admin";
+import {
+  getTrainee,
+  updateTrainee,
+} from "../../../apis/trainees/update-trainee";
 import styles from "./index.module.css";
 import { FaCamera } from "react-icons/fa";
 import { Input } from "../../../components/input";
-import { useReducer, useRef, useState } from "react";
-import Permissions from "../Pieces/Permissions";
 import { Button } from "../../../components/button";
 
 function reducer(state: any, action: any) {
+  if (action.type === "trainee_loaded") {
+    const trainee = action.value;
+
+    return {
+      ...state,
+      firstName: trainee.first_name,
+      lastName: trainee.last_name,
+      email: trainee.user?.email ?? "",
+      phone_code: trainee.user?.phone_code ?? "+20",
+      phone_number: trainee.user?.phone_number ?? "",
+      profile_image: trainee.profile_image_url ?? "",
+    };
+  }
+
   if (action.type === "firstName_changed") {
     return {
       ...state,
       firstName: action.value,
     };
   }
+
   if (action.type === "lastName_changed") {
     return {
       ...state,
       lastName: action.value,
     };
   }
+
   if (action.type === "email_changed") {
     return {
       ...state,
       email: action.value,
     };
   }
+
   if (action.type === "phone_code_changed") {
     return {
       ...state,
       phone_code: action.value,
     };
   }
+
   if (action.type === "phone_number_changed") {
     return {
       ...state,
       phone_number: action.value,
     };
   }
-  if (action.type === "password_changed") {
-    return {
-      ...state,
-      password: action.value,
-    };
-  }
-  if (action.type === "permissions_changed") {
-    return {
-      ...state,
-      permissions: action.value,
-    };
-  }
+
   throw Error("Unknown action.");
 }
 
-export default function AddAdmin() {
+export default function EditTrainee() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { axios: axiosInstance } = useAxios();
+
   const [state, dispatch] = useReducer(reducer, {
+    profile_image: "",
     firstName: "",
     lastName: "",
     email: "",
     phone_code: "+20",
     phone_number: "",
     password: "",
-    permissions: [] as number[],
+    confirmPassword: "",
   });
 
-  const { axios: axiosInstance } = useAxios();
-  const navigate = useNavigate();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!id) return;
+
+    getTrainee(axiosInstance, id)
+      .then((response) => {
+        dispatch({
+          type: "trainee_loaded",
+          value: response,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [id]);
 
   const handleSubmit = async () => {
+    if (!id) return;
+
     try {
       const formData = new FormData();
 
@@ -78,19 +112,14 @@ export default function AddAdmin() {
       formData.append("email", state.email);
       formData.append("phone_code", state.phone_code.replace("+", ""));
       formData.append("phone_number", state.phone_number);
-      formData.append("password", state.password);
-
-      state.permissions.forEach((permissionId: number) => {
-        formData.append("permissions[]", permissionId.toString());
-      });
 
       if (selectedFile) {
         formData.append("profile_image", selectedFile);
       }
 
-      await addAdmin(axiosInstance, formData);
-
-      navigate("/admins?page=1&search=");
+      await updateTrainee(axiosInstance, id, formData);
+      alert("Trainee updated successfully");
+      navigate("/trainees?page=1&search=");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("Status:", error.response?.status);
@@ -100,21 +129,22 @@ export default function AddAdmin() {
       }
     }
   };
-  const [selectedFile, setSelectedFile] = useState(null);
-  const fileInputRef = useRef<any>(null);
-  const [previewUrl, setPreviewUrl] = useState<any>(null);
 
-  const handleFileChange = (event: any) => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+
     if (file) {
       setSelectedFile(file);
+
       const objectUrl = URL.createObjectURL(file);
       setPreviewUrl(objectUrl);
     }
   };
+
   const handleCustomClick = () => {
     fileInputRef.current?.click();
   };
+
   return (
     <div className={styles.formcontainer}>
       <div className="container-fluid">
@@ -126,11 +156,15 @@ export default function AddAdmin() {
                   <img src={previewUrl} alt="Profile" />
                 ) : (
                   <img
-                    src="/app/images/avatar_holder_dashboard.gif"
+                    src={
+                      state.profile_image ||
+                      "/app/images/avatar_holder_dashboard.gif"
+                    }
                     alt="Profile"
                   />
                 )}
               </div>
+
               <input
                 type="file"
                 ref={fileInputRef}
@@ -138,11 +172,13 @@ export default function AddAdmin() {
                 accept="image/*"
                 style={{ display: "none" }}
               />
+
               <button type="button" className={styles.cameraButton}>
                 <FaCamera />
               </button>
             </div>
           </div>
+
           <div className="col-12">
             <div className="row g-3">
               <div className="col-12 col-md-6">
@@ -162,6 +198,7 @@ export default function AddAdmin() {
                   }}
                 />
               </div>
+
               <div className="col-12 col-md-6">
                 <Input
                   id="lastName"
@@ -179,6 +216,7 @@ export default function AddAdmin() {
                   }}
                 />
               </div>
+
               <div className="col-12 col-md-6">
                 <Input
                   id="email"
@@ -196,6 +234,7 @@ export default function AddAdmin() {
                   }}
                 />
               </div>
+
               <div className="col-12 col-md-6">
                 <Input
                   id="phone"
@@ -220,59 +259,14 @@ export default function AddAdmin() {
                   }}
                 />
               </div>
-              <div className="col-12 col-md-6">
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  label="Password"
-                  placeholder="Enter password"
-                  className={styles.formInput}
-                  value={state.password}
-                  onChange={(password) => {
-                    dispatch({
-                      type: "password_changed",
-                      value: password.target.value,
-                    });
-                  }}
-                />
-              </div>
-              <div className="col-12 col-md-6">
-                <Input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  label="Confirm Password"
-                  placeholder="Confirm password"
-                  className={styles.formInput}
-                  value={state.confirmPassword}
-                  onChange={(confirmPassword) => {
-                    // dispatch({
-                    //   type: "confirmPassword_changed",
-                    //   value: confirmPassword.target.value,
-                    // });
-                  }}
-                />
-              </div>
-              <div className="col-12">
-                <Permissions
-                  selectedPermissions={state.permissions}
-                  setSelectedPermissions={(permissions) => {
-                    dispatch({
-                      type: "permissions_changed",
-                      value: permissions,
-                    });
-                  }}
-                />
-              </div>
+
               <div className="col-12">
                 <Button
                   id="Submit"
                   type="submit"
-                  className={styles["buttonSubmit"]}
+                  className={styles.buttonSubmit}
                   text="Submit"
                   onClick={handleSubmit}
-                  // disabled={!isFormValid}
                 />
               </div>
             </div>
