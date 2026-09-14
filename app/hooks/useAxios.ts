@@ -71,12 +71,19 @@ export const useAxios = (options?: {
           error.response.status === 401 &&
           !originalConfig._retry
         ) {
+          if (window.location.pathname === "/sign-in") {
+            return Promise.reject(error);
+          }
           originalConfig._retry = true;
           // If no refresh in-flight, start one
+          const refreshToken = localStorage.getItem("refreshToken");
+          if (!refreshToken) {
+            return Promise.reject(error);
+          }
+
           if (!refreshPromise) {
             refreshPromise = (async () => {
               try {
-                const refreshToken = localStorage.getItem("refreshToken");
                 // Use bare axios to avoid infinite loops on this instance
                 const res: any = await axios({
                   method: "GET",

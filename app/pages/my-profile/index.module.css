@@ -83,3 +83,12 @@
 .name {
   margin-top: 15px;
 }
+.formcontainer {
+  background-color: #fff;
+  width: 98%;
+  height: auto;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 95px;
+  margin-left: 12px;
+}

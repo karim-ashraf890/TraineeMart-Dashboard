@@ -31,3 +31,13 @@ export const updateAdmin = (
 export const deleteAdmin = (axios: AxiosInstance, id: string | number) => {
   return axios.delete(`/admins/${id}`);
 };
+export type UpdatePasswordData = {
+  currentPassword: string;
+  newPassword: string;
+};
+export const UpdatePassword = (
+  axios: AxiosInstance,
+  data: UpdatePasswordData,
+) => {
+  return axios.post("/authentication/update_password", data);
+};
