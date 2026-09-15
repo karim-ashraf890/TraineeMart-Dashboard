@@ -7,6 +7,7 @@ import type { Admin } from "../types";
 import styles from "./AdminActions.module.css";
 import { useAxios } from "../../../../app/hooks/useAxios";
 import { deleteAdmin } from "../../../../app/apis/admin/update-admin";
+import { toast } from "react-toastify";
 interface Props {
   admin: Admin;
 }
@@ -42,12 +43,20 @@ export default function AdminActions({ admin }: Props) {
         navigate(`/admins/edit/${admin.id}`);
         break;
       case "delete":
+        const confirmed = window.confirm(
+          "Are you sure you want to delete this admin ?",
+        );
+        if (!confirmed) {
+          return;
+        }
         try {
           await deleteAdmin(axios, admin.id);
+          toast.success("Admin deleted successfully!");
           console.log("Admin deleted successfully");
           navigate("/admins?page=1&search=");
         } catch (error) {
           console.error("Delete admin failed:", error);
+          toast.error("Delete trainee failed:");
         }
         break;
       default:

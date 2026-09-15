@@ -10,6 +10,7 @@ import styles from "./index.module.css";
 import { FaCamera } from "react-icons/fa";
 import { Input } from "../../../components/input";
 import { Button } from "../../../components/button";
+import { toast } from "react-toastify";
 
 function reducer(state: any, action: any) {
   if (action.type === "trainee_loaded") {
@@ -118,12 +119,13 @@ export default function EditTrainee() {
       }
 
       await updateTrainee(axiosInstance, id, formData);
-      alert("Trainee updated successfully");
+      toast.success("Trainee updated successfully!");
       navigate("/trainees?page=1&search=");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("Status:", error.response?.status);
         console.log("Response:", error.response?.data);
+        toast.error(error.response?.data?.error?.message);
       } else {
         console.log(error);
       }

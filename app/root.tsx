@@ -38,6 +38,7 @@ import { clearAuthData } from "./apis/clearAuthData";
 import { AppProvider } from "./store/appReducer";
 import { GetMyProfile } from "./apis/admin/get my-profile";
 import { useAxios } from "./hooks/useAxios";
+import { ToastContainer } from "react-toastify";
 
 const { Header, Sider, Content } = AntLayout;
 
@@ -227,6 +228,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <ScrollRestoration />
           <Scripts />
         </AppProvider>
+        <ToastContainer theme="colored" />
       </body>
     </html>
   );

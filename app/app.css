@@ -1,4 +1,5 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
+@import "react-toastify/dist/ReactToastify.css";
 
 .ant-layout-sider {
   background-color: #142d4c !important;

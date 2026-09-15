@@ -7,6 +7,7 @@ import type { Student } from "../types";
 import styles from "./StudentActions.module.css";
 import { useAxios } from "../../../hooks/useAxios";
 import { deleteTrainee } from "../../../apis/trainees/update-trainee";
+import { toast } from "react-toastify";
 
 interface Props {
   student: Student;
@@ -40,23 +41,24 @@ export default function StudentActions({ student }: Props) {
   const handleMenuClick: MenuProps["onClick"] = async ({ key }) => {
     switch (key) {
       case "edit":
-        alert();
         navigate(`/trainees/edit/${student.id}`);
         break;
 
       case "delete":
+        const confirmed = window.confirm(
+          "Are you sure you want to delete this trainee?",
+        );
+        if (!confirmed) {
+          return;
+        }
         try {
           await deleteTrainee(axios, student.id);
-          alert("Trainee deleted successfully");
+          toast.success("Trainee deleted successfully!");
           console.log("Trainee deleted successfully");
-
-          // ============================================================
-          // بعد نجاح الحذف نعمل Refresh للصفحة
-          // عشان الـ Trainee المحذوف يختفي من الجدول فورًا
-          // ============================================================
           window.location.reload();
         } catch (error) {
           console.error("Delete trainee failed:", error);
+          toast.error("Delete trainee failed:");
         }
 
         break;

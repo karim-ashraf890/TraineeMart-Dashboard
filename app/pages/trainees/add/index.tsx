@@ -8,6 +8,8 @@ import { Input } from "../../../components/input";
 import { useReducer, useRef, useState } from "react";
 import { Button } from "../../../components/button";
 
+import { toast } from "react-toastify";
+
 function reducer(state: any, action: any) {
   if (action.type === "firstName_changed") {
     return {
@@ -90,20 +92,18 @@ export default function AddTrainee() {
       formData.append("phone_number", state.phone_number);
       formData.append("password", state.password);
 
-      // Confirm Password مش بيتبعت للـ API
-      // لأنه مش موجود في fields الخاصة بالـ dashboard_students
-
       if (selectedFile) {
         formData.append("profile_image", selectedFile);
       }
 
       await addTrainee(axiosInstance, formData);
-      alert("Trainee added successfully");
+      toast.success("Trainee added successfully!");
       navigate("/trainees?page=1&search=");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("Status:", error.response?.status);
         console.log("Response:", error.response?.data);
+        toast.error(error.response?.data?.error?.message);
       } else {
         console.log(error);
       }
@@ -124,7 +124,7 @@ export default function AddTrainee() {
   const handleCustomClick = () => {
     fileInputRef.current?.click();
   };
-
+  const notify = () => toast("Wow so easy!");
   return (
     <div className={styles.formcontainer}>
       <div className="container-fluid">

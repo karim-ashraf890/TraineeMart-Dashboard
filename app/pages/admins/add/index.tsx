@@ -8,6 +8,7 @@ import { Input } from "../../../components/input";
 import { useReducer, useRef, useState } from "react";
 import Permissions from "../Pieces/Permissions";
 import { Button } from "../../../components/button";
+import { toast } from "react-toastify";
 
 function reducer(state: any, action: any) {
   if (action.type === "firstName_changed") {
@@ -89,12 +90,13 @@ export default function AddAdmin() {
       }
 
       await addAdmin(axiosInstance, formData);
-
+      toast.success("Admin added successfully!");
       navigate("/admins?page=1&search=");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log("Status:", error.response?.status);
         console.log("Response:", error.response?.data);
+        toast.error(error.response?.data?.error?.message);
       } else {
         console.log(error);
       }
