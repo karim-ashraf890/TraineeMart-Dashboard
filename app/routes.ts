@@ -11,6 +11,7 @@ export default [
   route("consultation-requests", "./routes/consultation-requests.tsx"),
   route("courses", "./routes/courses.tsx"),
   route("organizations", "./routes/organizations.tsx"),
+  route("organizations/add", "./routes/organizations-add.tsx"),
   route("sub-categories", "./routes/sub-categories.tsx"),
   route("trainees", "./routes/trainees.tsx"),
   route("trainees/add", "./routes/trainees-add.tsx"),
