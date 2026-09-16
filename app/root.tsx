@@ -188,9 +188,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   ]}
                 />
 
-                <div className="logout-container" onClick={handleLogout}>
+                <div
+                  className="logout-container"
+                  onClick={handleLogout}
+                  title={collapsed ? "Logout" : ""}
+                >
                   <FiLogOut />
-                  <span>Logout</span>
+
+                  {!collapsed && <span>Logout</span>}
                 </div>
               </Sider>
             )}

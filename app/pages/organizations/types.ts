@@ -16,3 +16,26 @@ export interface Organization {
   updated_by_adminName: string | null;
   updated_by_studentName: string | null;
 }
+
+export interface OrganizationFormData {
+  name: string;
+  license_number: string;
+  commercial_registration_number: string;
+  communication_officer: string;
+  serviceType_id: string;
+  courseTypes: string[];
+  subtitle_en: string;
+  subtitle_ar: string;
+  badge_en: string;
+  badge_ar: string;
+  brief_en: string;
+  brief_ar: string;
+  wage: string;
+  facebook_url: string;
+  twitter_url: string;
+  linkedin_url: string;
+  contact_email: string;
+  official_website_url: string;
+  keywords: string[];
+  skills: string[];
+}

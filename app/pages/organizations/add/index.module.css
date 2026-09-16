@@ -49,3 +49,10 @@
   font-weight: 500;
   color: black;
 }
+.AdditionalData {
+  font-size: 45px;
+  color: black;
+  font-weight: 600;
+  font-family: "NotoKufiArabic";
+  text-align: center;
+}
