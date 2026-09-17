@@ -55,7 +55,9 @@ export default function StudentActions({ student }: Props) {
           await deleteTrainee(axios, student.id);
           toast.success("Trainee deleted successfully!");
           console.log("Trainee deleted successfully");
-          window.location.reload();
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
         } catch (error) {
           console.error("Delete trainee failed:", error);
           toast.error("Delete trainee failed:");
